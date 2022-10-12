@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quatantech</title>
-    <link rel="stylesheet" href="/assets/vendors/iconfonts/mdi/css/materialdesignicons.css">
-    <link rel="stylesheet" href="/assets/css/shared/style.css">
-    <link rel="stylesheet" href="/assets/css/demo_1/style.css">
+    <link rel="stylesheet" href="{{ asset('/assets/vendors/iconfonts/mdi/css/materialdesignicons.css')}}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/shared/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/demo_1/style.css')}}">
     <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
 </head>
 
@@ -95,7 +95,7 @@
                     </a>
                     <ul class="collapse navigation-submenu" id="manage">
                         <li>
-                            <a href="#" style="color: rgb(0, 0, 0);">Products</a>
+                            <a href="/product" style="color: rgb(0, 0, 0);">Products</a>
                         </li>
                         <li>
                             <a href="#" style="color: rgb(0, 0, 0);">Shop</a>
@@ -158,11 +158,9 @@
                 </li>
             </ul>
         </div>
-        <div class="page-content-wrapper">
-            <div class="page-content-wrapper-inner">
-                <div class="content-viewport">
-                    @yield('content')
-                </div>
+        <div class="page-content-wrapper-inner">
+            <div class="content-viewport">
+                @yield('content')
             </div>
         </div>
     </div>
