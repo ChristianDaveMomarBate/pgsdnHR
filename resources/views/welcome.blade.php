@@ -1,18 +1,14 @@
 <!DOCTYPE HTML>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
 <meta charset="utf-8">
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="max-age=604800" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
 <meta name="description" content="Bootstrap e-commerce html template similar to Alibaba">
 <meta name="keywords" content="Online template, shop, theme, template, html, css, bootstrap 4">
-
 <title>Quarantech</title>
-
 <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <!-- jQuery -->

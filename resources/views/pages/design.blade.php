@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quatantech</title>
-    <link rel="stylesheet" href="{{ asset('/assets/vendors/iconfonts/mdi/css/materialdesignicons.css')}}">
-    <link rel="stylesheet" href="{{ asset('/assets/css/shared/style.css')}}">
-    <link rel="stylesheet" href="{{ asset('/assets/css/demo_1/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('/assets/vendors/iconfonts/mdi/css/materialdesignicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/shared/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/demo_1/style.css') }}">
     <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body class="header-fixed">
@@ -78,12 +79,13 @@
         </div>
     </nav>
     <div class="page-body">
-
+        <a href="/" class="btn btn-dark rounded-pill"
+            style="font-size:13px; z-index:100; position: fixed; bottom:10px; right:10px;">Visitors Page</a>
         <div class="sidebar">
             <ul class="navigation-menu">
                 <li class="nav-category-divider"></li>
                 <li>
-                    <a href="#">
+                    <a href="/dashboard">
                         <span class="link-title">Dashboard</span>
                         <i class="mdi mdi-gauge link-icon"></i>
                     </a>
@@ -161,6 +163,7 @@
         <div class="page-content-wrapper-inner">
             <div class="content-viewport">
                 @yield('content')
+                @yield('script')
             </div>
         </div>
     </div>
