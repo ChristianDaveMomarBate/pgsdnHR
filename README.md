@@ -6,31 +6,35 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
-<h1 align="center">Brgy. Poblacion Bacuag Water District</h1>
+<h1 align="center">Quarantech a personalize shopify like system</h1>
 
-<p align="justify">Online water billing system with SMS notification. Surigao Del Norte State University - BSIT 3rd Year Capstone Project.</p>
-•   Author: <a href="https://abby2727.github.io/my-portfolio/"> Abdul Pangandaman </a> <br>
-•   Twitter: <a href="https://twitter.com/abby_2727"> @abby_2727 </a> <br>
-•   Instagram: <a href="https://www.instagram.com/abbyyyyys_/"> @abbyyyyys_ </a> <br>
+<p align="justify">E-Commerce Created for templating .</p>
+•   Author: <a href="https://www.facebook.com/mythsdev"> Christian Dave Momar Bate </a> <br>
+•   Twitter: <a href="https://twitter.com/ferrariBate"> @ferrariBate </a> <br>
+•   Linkedin: <a href="https://www.linkedin.com/in/christian-dave-bate-58b838246/"> Christian Dave Bate </a> <br>
+•   Instagram: <a href="https://www.instagram.com/pororo_panda/"> @pororo_panda </a> <br>
 
 ## Objectives
-•   To identify the problem between the consumer and the water district department with regards to water facilities and services. <br>
-•   To create and design a web-based application that provides better services in line with the billing information and water status as well as collect feedback for the improvement of the service. <br>
-•   To evaluate the functionality of the proposed system. <br>
+•   This is a laravel universal template that i personally created to prepare myself on the actual company job ♥<br>
 
 ## Requirement
-•   PHP 8.0.2 or higher
+•   PHP Latest version
+•   NPN 
+•   Laravel 9
 
 ## Installation
 Setting up your development environment on your local machine:
 ```
-git clone https://github.com/abby2727/poblacion-water-bill.git
-cd poblacion-water-bill
+git clone https://github.com/ChristianDaveMomarBate/Quarantech.git
+cd Quarantech
 composer install
+npm install
+cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan optimize
 php artisan serve
+npm run dev
 ```
 ## Before Starting
 
@@ -39,7 +43,7 @@ Create Database and Set-up db credential on .env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=water-billing-system
+DB_DATABASE=Quarantech
 DB_USERNAME={USERNAME}
 DB_PASSWORD={PASSWORD}
 ```
