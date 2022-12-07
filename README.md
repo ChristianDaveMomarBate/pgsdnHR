@@ -1,8 +1,6 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<h1 align="center">Quarantech</h1>
-
-<p align="justify">E-Commerce Created for templating .</p>
+<p align="justify">Quarantech</p>
 •   Author: <a href="https://www.facebook.com/mythsdev"> Christian Dave Momar Bate </a> <br>
 •   Twitter: <a href="https://twitter.com/ferrariBate"> @ferrariBate </a> <br>
 •   Linkedin: <a href="https://www.linkedin.com/in/christian-dave-bate-58b838246/"> Christian Dave Bate </a> <br>
