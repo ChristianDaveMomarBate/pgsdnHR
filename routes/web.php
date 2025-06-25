@@ -15,16 +15,8 @@ use App\Http\Controllers\PcategoryController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('/auth/login');
 });
-
-
-Route::get('/product', function () {
-    return view('product');
-});
-// Route::get('/shop', function () {
-//     return view('shop');
-// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
