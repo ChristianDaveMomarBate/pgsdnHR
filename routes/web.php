@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PcategoryController;
+use App\Http\Controllers\EmployeeDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +20,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
+    
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/employees', [EmployeeDataController::class, 'getEmployees'])->name('getEmployees');
 
 require __DIR__.'/auth.php';
 
 // Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('product', [PcategoryController::class, 'storecat'])->name('storecat');
-Route::get('product', [PcategoryController::class, 'index']);
-Route::post('/productstore', [PcategoryController::class, 'storeprod'])->name('storeprod');

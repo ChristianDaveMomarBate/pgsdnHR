@@ -9,8 +9,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- DataTables Bootstrap 5 CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
     <link rel="icon" href="images/SDN.PNG" type="image/x-icon" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -33,56 +33,64 @@
             </button>
         </form>
     </header>
-
     <!-- Main content -->
-    <!-- Main content -->
-    <div class="container-fluid py-5" style="MARGIN-top: 30px;">
+    <div class="container-fluid py-5 mt-4">
         <div class="row gx-3">
-            <!-- DataTable 1 -->
-            <div class="col-12  mb-4">
-                <table id="datatable1" class="table table-striped table-bordered w-100">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Department</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>John Doe</td>
-                            <td>HR</td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td>Jane Smith</td>
-                            <td>Finance</td>
-                        </tr>
-                        <tr>
-                            <td>003</td>
-                            <td>Mike Johnson</td>
-                            <td>IT</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Employee Records</h5>
+                        <table id="datatable1" class="table table-striped table-bordered w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated via AJAX -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 
+
+
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- jQuery and DataTables -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+        <script>
         $(document).ready(function() {
-            $('#datatable1').DataTable();
-            $('#datatable2').DataTable();
+            $('#datatable1').DataTable({
+                processing: true,
+                serverSide: false, // Set to true if you're paginating server-side
+                ajax: "{{ route('getEmployees') }}",
+                columns: [{
+                        data: 'empID'
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `${row.lname}, ${row.fname} ${row.mname ?? ''}`;
+                        }
+                    },
+                    {
+                        data: 'officeID'
+                    }
+                ]
+            });
         });
     </script>
 </body>
