@@ -24,6 +24,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/employees', [EmployeeDataController::class, 'getEmployees'])->name('getEmployees');
+Route::get('/employees/print-pdf', [EmployeeDataController::class, 'printPdf'])->name('employees.printPdf');
+
 
 require __DIR__.'/auth.php';
 

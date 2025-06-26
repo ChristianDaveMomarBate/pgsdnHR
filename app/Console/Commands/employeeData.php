@@ -25,9 +25,6 @@ class employeeData extends Command
     $this->info('Starting transfer from hrmps.employees to hrmis_confidentiald.employeeData...');
 
     $records = DB::table('hrmps.employees')
-        ->whereRaw("STR_TO_DATE(last_appointment, '%Y-%m-%d') > '2021-07-01'")
-        ->where('empStatusID', 3)
-        ->where('status', 1)
         ->get();
 
     $this->info('Transferring ' . $records->count() . ' records...');
