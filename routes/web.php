@@ -26,6 +26,9 @@ Route::get('/dashboard', function () {
 Route::get('/employees', [EmployeeDataController::class, 'getEmployees'])->name('getEmployees');
 Route::get('/employees/print-pdf', [EmployeeDataController::class, 'printPdf'])->name('employees.printPdf');
 
+Route::get('/employees/leaves', [EmployeeDataController::class, 'getLeaves'])->name('getLeaves');
+Route::get('/employees/leaves/print-pdf', [EmployeeDataController::class, 'leavesprintPdf'])->name('leaves.printPdf');
+
 
 require __DIR__.'/auth.php';
 

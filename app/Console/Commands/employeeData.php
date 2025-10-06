@@ -22,7 +22,7 @@ class employeeData extends Command
      */
    public function handle()
 {
-    $this->info('Starting transfer from hrmps.employees to hrmis_confidentiald.employeeData...');
+    $this->info('Starting transfer from hrmps.employees to hrmis_confidentiaData.employeeData...');
 
     $records = DB::table('hrmps.employees')
         ->get();
@@ -31,7 +31,7 @@ class employeeData extends Command
     $this->output->progressStart($records->count());
 
     foreach ($records as $record) {
-        DB::table('hrmis_confidentiald.employeeData')->insert([
+        DB::table('hrmis_confidentialData.employeeData')->insert([
             'empID'            => $record->empID,
             'lname'            => $record->lname,
             'fname'            => $record->fname,

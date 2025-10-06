@@ -27,7 +27,6 @@
         /* Dark header style */
         .custom-table thead th {
             background-color: #343a40;
-            /* Bootstrap dark */
             color: #fff;
             border-bottom: 2px solid #495057;
         }
@@ -35,18 +34,15 @@
         /* Alternating row colors */
         .custom-table tbody tr:nth-child(odd) {
             background-color: #f8f9fa;
-            /* light grey */
         }
 
         .custom-table tbody tr:nth-child(even) {
             background-color: #e9f2fb;
-            /* soft blue */
         }
 
         /* Hover effect */
         .custom-table tbody tr:hover {
             background-color: #d0ebff;
-            /* highlight on hover */
         }
 
         .custom-table th:nth-child(5),
@@ -70,18 +66,49 @@
             padding-left: 0.5rem;
             padding-right: 0.5rem;
         }
+
+        /* Moving blue gradient background */
+        .animated-bg-blue {
+            background: linear-gradient(270deg, #1e3c72, #2a5298, #1e3c72);
+            background-size: 600% 600%;
+            animation: gradientMove 6s ease infinite;
+            color: #fff;
+        }
+
+        /* Optional overlay for text readability */
+        .card-body.bg-overlay {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 0.25rem;
+            padding: 1rem;
+        }
     </style>
 </head>
 
 <body class="bg-light">
-
     <!-- Fixed Header -->
     <header class="fixed-top bg-white shadow-sm d-flex justify-content-between align-items-center px-3"
         style="height: 60px; z-index: 1030;">
-        <div>
-            <h5 class="mb-0">HRMIS PGSDN - Confidential Data</h5>
+        <div class="d-flex align-items-center">
+            <h5 class="mb-0 me-3">HRMIS PGSDN - Confidential Data</h5>
+
+            <!-- Dropdown Menu -->
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="menuDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Menu
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="menuDropdown">
+                    <li><a class="dropdown-item" href="#" id="employeeLink">Employee</a></li>
+                    <li><a class="dropdown-item" href="#" id="leaveAppLink">Leave Application</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                </ul>
+            </div>
         </div>
 
+        <!-- Sign Out Button -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="btn text-danger"
@@ -90,9 +117,11 @@
             </button>
         </form>
     </header>
+
     <!-- Main content -->
     <div class="container-fluid py-5 mt-4">
-        <div class="row gx-3">
+        <!-- Employee Records Panel -->
+        <div class="row gx-3" id="employeePanel">
             <div class="col-12 mb-4">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
@@ -103,23 +132,102 @@
                             </button>
                         </div>
                         <div class="table-responsive">
+                            <table id="datatable1"
+                                class="table table-sm table-striped table-bordered align-middle mb-0 custom-table">
+                                <thead class="table-dark text-white text-center align-middle">
+                                    <tr class="text-nowrap">
+                                        <th>Employee ID</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>Status</th>
+                                        <th>Current Address</th>
+                                        <th>Mobile</th>
+                                        <th>Position ID</th>
+                                        <th>Plantilla No</th>
+                                        <th>Employment Status ID</th>
+                                        <th>Date Employed</th>
+                                        <th>Last Appointment</th>
+                                        <th>Office ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be populated via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave Application Panel -->
+        <div class="row gx-3" id="leaveAppPanel" style="display: none;">
+            <div class="col-12 mb-4">
+                <div class="col-12 mb-3 text-start">
+                    <button class="btn btn-danger btn-sm" id="printLeaveSummary">
+                        <i class="bx bx-printer"></i> Print Summary
+                    </button>
+                </div>
+
+                <script>
+                    document.getElementById('printLeaveSummary').addEventListener('click', function() {
+                        // Redirect to the PDF generation route
+                        window.open("{{ route('leaves.printPdf') }}", '_blank');
+                    });
+                </script>
+                <div class="row gx-3 mb-3">
+                    <div class="row gx-3 mb-3">
+                        <!-- Leave Counts per Leave Type -->
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp animated-bg-blue"
+                                style="animation-duration: 1s;">
+                                <div class="card-body bg-overlay">
+                                    <h6 class="card-title text-white">Leave Counts per Leave Type</h6>
+                                    <ul class="list-group list-group-flush" id="leaveTypeCounts"
+                                        style="max-height: 180px; overflow-y: auto;">
+                                        <!-- Will be populated dynamically -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp animated-bg-blue"
+                                style="animation-duration: 1s; animation-delay: 0.2s;">
+                                <div class="card-body bg-overlay">
+                                    <h6 class="card-title text-white">Total Leaves by Gender</h6>
+                                    <ul class="list-group list-group-flush text-white">
+                                        <li class="list-group-item d-flex justify-content-between bg-transparent">
+                                            <span class="text-white">Male</span>
+                                            <span class="text-white"id="totalMale">0</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between bg-transparent">
+                                            <span class="text-white">Female</span>
+                                            <span class="text-white" id="totalFemale">0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="mb-3">Employee Leave Records</h5>
                             <div class="table-responsive">
-                                <table id="datatable1"
+                                <table id="datatableLeaves"
                                     class="table table-sm table-striped table-bordered align-middle mb-0 custom-table">
-                                    <thead class="table-dark text-white text-center align-middle">
+                                    <thead class="table-secondary text-center align-middle">
                                         <tr class="text-nowrap">
+                                            <th>ID</th>
+                                            <th>Series</th>
                                             <th>Employee ID</th>
-                                            <th>Name</th>
+                                            <th>Employee Name</th>
                                             <th>Gender</th>
-                                            <th>Status</th>
-                                            <th>Current Address</th>
-                                            <th>Mobile</th>
-                                            <th>Position ID</th>
-                                            <th>Plantilla No</th>
-                                            <th>Employment Status ID</th>
-                                            <th>Date Employed</th>
-                                            <th>Last Appointment</th>
-                                            <th>Office ID</th>
+                                            <th>Office</th>
+                                            <th>Position</th>
+                                            <th>Leave Type</th>
+                                            <th>Date Filed</th>
+                                            <th>Days</th>
+                                            <th>Pay Type</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -131,71 +239,159 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+</body>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('#datatable1').DataTable({
-                processing: true,
-                serverSide: false,
-                pageLength: 50,
-                ajax: "{{ route('getEmployees') }}",
-                columns: [{
-                        data: 'empID'
-                    },
-                    {
-                        data: 'lname',
-                        render: function(data, type, row) {
-                            return `${row.lname}, ${row.fname} ${row.mname ?? ''}`;
-                        }
-                    },
-                    {
-                        data: 'gender'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'currentAdd'
-                    },
-                    {
-                        data: 'mobile'
-                    },
-                    {
-                        data: 'positionID'
-                    },
-                    {
-                        data: 'plantillaNo'
-                    },
-                    {
-                        data: 'empStatusID'
-                    },
-                    {
-                        data: 'dateEmployed'
+<script>
+    $(document).ready(function() {
 
-                    },
-                    {
-                        data: 'last_appointment'
-
-                    },
-
-                    {
-                        data: 'officeID'
+        $('#datatable1').DataTable({
+            processing: true,
+            serverSide: false,
+            pageLength: 50,
+            ajax: "{{ route('getEmployees') }}",
+            columns: [{
+                    data: 'empID'
+                },
+                {
+                    data: 'lname',
+                    render: function(data, type, row) {
+                        return `${row.lname}, ${row.fname} ${row.mname ?? ''}`;
                     }
-                ]
+                },
+                {
+                    data: 'gender'
+                },
+                {
+                    data: 'status'
+                },
+                {
+                    data: 'currentAdd'
+                },
+                {
+                    data: 'mobile'
+                },
+                {
+                    data: 'positionID'
+                },
+                {
+                    data: 'plantillaNo'
+                },
+                {
+                    data: 'empStatusID'
+                },
+                {
+                    data: 'dateEmployed'
+                },
+                {
+                    data: 'last_appointment'
+                },
+                {
+                    data: 'officeID'
+                }
+            ]
+        });
+
+        let leaveTable;
+
+        $('#leaveAppLink').on('click', function(e) {
+            e.preventDefault();
+            $('#employeePanel').hide();
+            $('#leaveAppPanel').show();
+
+            $.ajax({
+                url: "{{ route('getLeaves') }}",
+                type: 'GET',
+                success: function(response) {
+                    const leaves = response.data;
+                    const summary = response.summary;
+
+                    const leaveTypeCounts = $('#leaveTypeCounts');
+                    leaveTypeCounts.empty();
+                    $.each(summary.leaveCountsByType, function(leaveType, count) {
+                        leaveTypeCounts.append(
+                            `<li class="list-group-item d-flex justify-content-between">
+                        <span>${leaveType}</span>
+                        <span>${count}</span>
+                    </li>`
+                        );
+                    });
+                    $('#totalMale').text(summary.totalMale);
+                    $('#totalFemale').text(summary.totalFemale);
+
+                    if ($.fn.DataTable.isDataTable('#datatableLeaves')) {
+                        leaveTable.clear().rows.add(leaves).draw();
+                    } else {
+                        leaveTable = $('#datatableLeaves').DataTable({
+                            data: leaves,
+                            processing: true,
+                            serverSide: false,
+                            pageLength: 50,
+                            columns: [{
+                                    data: 'id'
+                                },
+                                {
+                                    data: 'series'
+                                },
+                                {
+                                    data: 'empID'
+                                },
+                                {
+                                    data: 'employeeName'
+                                },
+                                {
+                                    data: 'gender'
+                                },
+                                {
+                                    data: 'officeID'
+                                },
+                                {
+                                    data: 'positionID'
+                                },
+                                {
+                                    data: 'leaveID'
+                                },
+                                {
+                                    data: 'dateFiled'
+                                },
+                                {
+                                    data: 'days'
+                                },
+                                {
+                                    data: 'payType'
+                                }
+                            ]
+                        });
+                    }
+                }
             });
         });
-    </script>
 
-    <script>
-        document.getElementById('addEmployeeBtn').addEventListener('click', function() {
+        $('#employeeLink').on('click', function(e) {
+            e.preventDefault();
+            $('#leaveAppPanel').hide();
+            $('#employeePanel').show();
+        });
+
+        $('#addEmployeeBtn').on('click', function() {
             window.open("{{ route('employees.printPdf') }}", '_blank');
         });
-    </script>
-</body>
+
+        $('#leaveAppLink').on('click', function(e) {
+            e.preventDefault();
+            $('#employeePanel').hide();
+            $('#leaveAppPanel').show();
+        });
+
+        $('#employeeLink').on('click', function(e) {
+            e.preventDefault();
+            $('#leaveAppPanel').hide();
+            $('#employeePanel').show();
+        });
+    });
+</script>
 
 </html>
