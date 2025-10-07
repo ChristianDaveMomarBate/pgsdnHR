@@ -171,25 +171,23 @@
 
                 <script>
                     document.getElementById('printLeaveSummary').addEventListener('click', function() {
-                        // Redirect to the PDF generation route
                         window.open("{{ route('leaves.printPdf') }}", '_blank');
                     });
                 </script>
                 <div class="row gx-3 mb-3">
                     <div class="row gx-3 mb-3">
-                        <!-- Leave Counts per Leave Type -->
                         <div class="col-md-3 mb-3">
                             <div class="card shadow-sm border-0 animate__animated animate__fadeInUp animated-bg-blue"
                                 style="animation-duration: 1s;">
                                 <div class="card-body bg-overlay">
                                     <h6 class="card-title text-white">Leave Counts per Leave Type</h6>
                                     <ul class="list-group list-group-flush" id="leaveTypeCounts"
-                                        style="max-height: 180px; overflow-y: auto;">
-                                        <!-- Will be populated dynamically -->
+                                        style="max-height: 300px; overflow-y: auto;">
                                     </ul>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-3 mb-3">
                             <div class="card shadow-sm border-0 animate__animated animate__fadeInUp animated-bg-blue"
                                 style="animation-duration: 1s; animation-delay: 0.2s;">
@@ -311,14 +309,31 @@
 
                     const leaveTypeCounts = $('#leaveTypeCounts');
                     leaveTypeCounts.empty();
-                    $.each(summary.leaveCountsByType, function(leaveType, count) {
-                        leaveTypeCounts.append(
-                            `<li class="list-group-item d-flex justify-content-between">
-                        <span>${leaveType}</span>
-                        <span>${count}</span>
-                    </li>`
-                        );
+
+                    // Get both total and gender breakdowns
+                    const leaveCountsByType = summary.leaveCountsByType;
+                    const leaveCountsByTypeByGender = summary.leaveCountsByTypeByGender;
+
+                    $.each(leaveCountsByType, function(leaveType, count) {
+                        const genderData = leaveCountsByTypeByGender[leaveType] || {
+                            Male: 0,
+                            Female: 0
+                        };
+
+                        leaveTypeCounts.append(`
+            <li class="list-group-item d-flex justify-content-between align-items-start flex-column">
+                <div class="w-100 d-flex justify-content-between">
+                    <span><strong>${leaveType}</strong></span>
+                    <span class="badge bg-primary rounded-pill">${count}</span>
+                </div>
+                <div class="mt-1 w-100 d-flex justify-content-between small text-muted">
+                    <span>👨 Male: ${genderData.Male}</span>
+                    <span>👩 Female: ${genderData.Female}</span>
+                </div>
+            </li>
+        `);
                     });
+
                     $('#totalMale').text(summary.totalMale);
                     $('#totalFemale').text(summary.totalFemale);
 

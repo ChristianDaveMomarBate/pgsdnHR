@@ -190,89 +190,99 @@ class EmployeeDataController extends Controller
     }
 
         public function getLeaves()
-        {
+{
+    $offices = DB::connection('hrmps')
+        ->table('offices')
+        ->select('officeID', 'officeName', 'office')
+        ->get()
+        ->keyBy('officeID');
 
-            $offices = DB::connection('hrmps')
-                ->table('offices')
-                ->select('officeID', 'officeName', 'office')
-                ->get()
-                ->keyBy('officeID');
+    $positions = DB::connection('hrmps')
+        ->table('positions')
+        ->select('positionID', 'designation')
+        ->get()
+        ->keyBy('positionID');
 
-            $positions = DB::connection('hrmps')
-                ->table('positions')
-                ->select('positionID', 'designation')
-                ->get()
-                ->keyBy('positionID');
+    $leaveTypes = DB::connection('hrmps')
+        ->table('leave_types')
+        ->select('leaveID', 'leave')
+        ->get()
+        ->keyBy('leaveID');
 
-            $leaveTypes = DB::connection('hrmps')
-                ->table('leave_types')
-                ->select('leaveID', 'leave')
-                ->get()
-                ->keyBy('leaveID');
+    $employees = DB::connection('hrmps')
+        ->table('employees')
+        ->select('empID', 'lname', 'fname', 'mname', 'gender')
+        ->get()
+        ->keyBy('empID');
 
-            $employees = DB::connection('hrmps')
-                ->table('employees')
-                ->select('empID', 'lname', 'fname', 'mname', 'gender')
-                ->get()
-                ->keyBy('empID');
+    $leaves = DB::connection('hrmps')
+        ->table('leaves')
+        ->select('id', 'series', 'empID', 'officeID', 'positionID', 'leaveID', 'dateFiled', 'payType', 'days')
+        ->where('series', '2025')
+        ->get();
 
-            $leaves = DB::connection('hrmps')
-                ->table('leaves')
-                ->select(
-                    'id', 'series', 'empID', 'officeID', 'positionID', 'leaveID', 
-                    'dateFiled', 'payType', 'days'
-                )
-                ->where('series', '2025')
-                // ->whereBetween('series', [2024, 2025]) kung e range
-                ->get();
-            $leaveCountByType = [];
-            $leaveCountByGender = ['Male' => 0, 'Female' => 0];
+    $leaveCountByType = [];
+    $leaveCountByGender = ['Male' => 0, 'Female' => 0];
+    $leaveCountsByTypeByGender = []; // <-- NEW
 
-            $leaves->transform(function ($leave) use ($offices, $positions, $leaveTypes, $employees, &$leaveCountByType, &$leaveCountByGender) {
+    $leaves->transform(function ($leave) use ($offices, $positions, $leaveTypes, $employees, &$leaveCountByType, &$leaveCountByGender, &$leaveCountsByTypeByGender) {
 
-                $empID = (string)$leave->empID; 
-                if (isset($employees[$empID])) {
-                    $emp = $employees[$empID];
-                    $leave->employeeName = $emp->lname . ', ' . $emp->fname . ' ' . ($emp->mname ?? '');
-                    if (strtoupper($emp->gender) === 'M') {
-                        $leave->gender = 'Male';
-                        $leaveCountByGender['Male']++;
-                    } elseif (strtoupper($emp->gender) === 'F') {
-                        $leave->gender = 'Female';
-                        $leaveCountByGender['Female']++;
-                    } else {
-                        $leave->gender = 'N/A';
-                    }
-                } else {
-                    $leave->employeeName = 'Unknown';
-                    $leave->gender = 'N/A';
-                }
-                $leaveName = $leaveTypes[$leave->leaveID]->leave ?? 'N/A';
-                $leaveCountByType[$leaveName] = ($leaveCountByType[$leaveName] ?? 0) + 1;
-                $leave->officeID = isset($offices[$leave->officeID])
-                    ? "({$offices[$leave->officeID]->office}) {$offices[$leave->officeID]->officeName}"
-                    : 'N/A';
-                $leave->positionID = $positions[$leave->positionID]->designation ?? 'N/A';
-                $leave->leaveID = $leaveName;
+        $empID = (string)$leave->empID;
+        if (isset($employees[$empID])) {
+            $emp = $employees[$empID];
+            $leave->employeeName = $emp->lname . ', ' . $emp->fname . ' ' . ($emp->mname ?? '');
+            if (strtoupper($emp->gender) === 'M') {
+                $leave->gender = 'Male';
+                $leaveCountByGender['Male']++;
+            } elseif (strtoupper($emp->gender) === 'F') {
+                $leave->gender = 'Female';
+                $leaveCountByGender['Female']++;
+            } else {
+                $leave->gender = 'N/A';
+            }
+        } else {
+            $leave->employeeName = 'Unknown';
+            $leave->gender = 'N/A';
+        }
 
-                $leave->payType = $leave->payType == 1 ? 'With Pay' : 'Without Pay';
+        $leaveName = $leaveTypes[$leave->leaveID]->leave ?? 'N/A';
+        $leaveCountByType[$leaveName] = ($leaveCountByType[$leaveName] ?? 0) + 1;
 
-                return $leave;
-            });
+        // --- NEW: count per leave type by gender ---
+        if (!isset($leaveCountsByTypeByGender[$leaveName])) {
+            $leaveCountsByTypeByGender[$leaveName] = ['Male' => 0, 'Female' => 0];
+        }
+        if ($leave->gender === 'Male') {
+            $leaveCountsByTypeByGender[$leaveName]['Male']++;
+        } elseif ($leave->gender === 'Female') {
+            $leaveCountsByTypeByGender[$leaveName]['Female']++;
+        }
 
-            arsort($leaveCountByType); 
-            $mostLeaveType = key($leaveCountByType);
-            $mostLeaveNumber = reset($leaveCountByType);
+        $leave->officeID = isset($offices[$leave->officeID])
+            ? "({$offices[$leave->officeID]->office}) {$offices[$leave->officeID]->officeName}"
+            : 'N/A';
+        $leave->positionID = $positions[$leave->positionID]->designation ?? 'N/A';
+        $leave->leaveID = $leaveName;
+        $leave->payType = $leave->payType == 1 ? 'With Pay' : 'Without Pay';
 
-           return response()->json([
-            'data' => $leaves,
-            'summary' => [
-                'leaveCountsByType' => $leaveCountByType,
-                'totalMale' => $leaveCountByGender['Male'],
-                'totalFemale' => $leaveCountByGender['Female']
-            ]
-        ]);
-    }
+        return $leave;
+    });
+
+    arsort($leaveCountByType);
+    $mostLeaveType = key($leaveCountByType);
+    $mostLeaveNumber = reset($leaveCountByType);
+
+    return response()->json([
+        'data' => $leaves,
+        'summary' => [
+            'leaveCountsByType' => $leaveCountByType,
+            'leaveCountsByTypeByGender' => $leaveCountsByTypeByGender, // <-- NEW
+            'totalMale' => $leaveCountByGender['Male'],
+            'totalFemale' => $leaveCountByGender['Female']
+        ]
+    ]);
+}
+
 
 
             public function leavesprintPdf()
